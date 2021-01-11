@@ -347,3 +347,31 @@ bool bmp280_read_float(BMP280_HandleTypedef *dev, float *temperature, float *pre
 
 	return false;
 }
+
+bool bmp280_read_temp_fixed(BMP280_HandleTypedef *dev, int32_t *temperature) {
+	int32_t adc_temp;
+	int32_t adc_pressure;
+	uint8_t data[8];
+
+	if (read_data(dev, 0xf7, data, 8)) {
+		return false;
+	}
+
+	adc_temp = data[3] << 12 | data[4] << 4 | data[5] >> 4;
+
+	int32_t fine_temp;
+	adc_pressure = data[0] << 12 | data[1] << 4 | data[2] >> 4;
+	*temperature = compensate_temperature(dev, adc_temp, &fine_temp);
+
+	return true;
+}
+
+bool bmp280_read_temp_float(BMP280_HandleTypedef *dev, float *temperature) {
+	int32_t fixed_temperature;
+	if (bmp280_read_temp_fixed(dev, &fixed_temperature)) {
+		*temperature = (float) fixed_temperature / 100;
+		return true;
+	}
+
+	return false;
+}
