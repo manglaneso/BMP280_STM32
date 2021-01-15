@@ -174,5 +174,21 @@ bool bmp280_read_fixed(BMP280_HandleTypedef *dev, int32_t *temperature,
 bool bmp280_read_float(BMP280_HandleTypedef *dev, float *temperature,
                        float *pressure, float *humidity);
 
+/**
+ * @brief  Read compensated temperature in degrees Celsius times 100.
+ * @param  dev: Pointer to BMP280 handle structure.
+ * @param temperature: Pointer to int32_t variable in where to store the compensated temperature
+ * @retval None
+ */
+bool bmp280_read_temp_fixed(BMP280_HandleTypedef *dev, int32_t *temperature);
+
+
+/**
+ * @brief  Convert int32_t compensated temperature to rounded uint8_t
+ * @param  fixed_temperature: Pointer to compensated temperature in degrees Celsius times 100.
+ * @param temperature: Pointer to uint8_t variable in where to store the rounded temperature.
+ * @retval None
+ */
+void bmp280_convert_and_round_temp_to_uint(int32_t *fixed_temperature, uint8_t *temperature);
 
 #endif  // __BMP280_H__
